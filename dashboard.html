@@ -185,7 +185,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
     </div>
     <div class="topbar-right">
       <div class="status-pill"><span class="dot dot-gray" id="statusDot"></span><span id="statusText">Disconnected</span></div>
-      <input class="api-input" id="apiUrl" value="http://localhost:8000" placeholder="API URL"/>
+      <input class="api-input" id="apiUrl" value="" placeholder="API URL" style="display:none"/>
       <button class="btn btn-ghost" onclick="loadAll()"><span id="refreshIcon">↻</span> Refresh</button>
       <button class="btn btn-primary" onclick="loadAll()">Connect</button>
     </div>
@@ -293,7 +293,7 @@ Chart.defaults.font.size   = 11;
 Chart.defaults.color       = '#64748b';
 Chart.defaults.borderColor = '#e2e6ef';
 
-const API = () => (document.getElementById('apiUrl').value||'http://localhost:8000').replace(/\/$/,'');
+const API = () => window.location.origin;
 const fmt  = n => n >= 1000000 ? (n/1000000).toFixed(1)+'M' : n >= 1000 ? (n/1000).toFixed(1)+'K' : (+n).toFixed(0);
 const fmtN = n => (+n).toLocaleString('en-EG',{minimumFractionDigits:0,maximumFractionDigits:0});
 
