@@ -1,3 +1,4 @@
+import startup_credentials  # noqa: F401
 """main.py — FastAPI app with built-in Telegram webhook. No n8n needed."""
 
 from fastapi import FastAPI, HTTPException, Request
