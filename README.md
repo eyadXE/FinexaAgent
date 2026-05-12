@@ -658,11 +658,6 @@ https://your-url.up.railway.app/ui
 
 Pull requests are welcome. For major changes, open an issue first.
 
----
-
-## 📄 License
-
-MIT — free for personal and commercial use.
 
 ---
 
@@ -670,6 +665,6 @@ MIT — free for personal and commercial use.
 
 **Built for Egyptian small businesses. Runs anywhere. Costs almost nothing.**
 
-[GitHub](https://github.com/eyadXE/FinexaAgent) · [Live Demo](https://finexaagent-production.up.railway.app/ui) · [API Docs](https://finexaagent-production.up.railway.app/docs)
+[GitHub](https://github.com/eyadXE/FinexaAgent) · [Live Demo](https://finexaagent-production.up.railway.app/ui) 
 
 </div>
