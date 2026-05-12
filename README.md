@@ -1,6 +1,7 @@
 <div align="center">
 
 # 🏦 Finexa — AI Finance Agent
+![FinexaLogo](logofinexa.png)
 
 ### _Your business accountant, living inside Telegram._
 
