@@ -122,6 +122,19 @@ body {
 }
 .nav-item:hover { background: #1e293b; color: #e2e8f0; }
 .nav-item.active { background: #1d4ed8; color: #fff; }
+.nav-item.nav-soon { cursor: default; opacity: .55; }
+.nav-item.nav-soon:hover { background: transparent; color: #94a3b8; }
+.soon-tag {
+  margin-left: auto;
+  font-size: .58rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  background: #1e293b;
+  color: #475569;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
 .nav-icon { font-size: .9rem; width: 18px; text-align: center; }
 
 .sidebar-bottom {
@@ -669,18 +682,18 @@ body {
   </div>
 
   <div class="nav-section">Main</div>
-  <div class="nav-item active" onclick="closeSidebar()"><span class="nav-icon">📊</span> Dashboard</div>
-  <div class="nav-item" onclick="closeSidebar()"><span class="nav-icon">💳</span> Transactions</div>
-  <div class="nav-item" onclick="closeSidebar()"><span class="nav-icon">📁</span> Categories</div>
+  <div class="nav-item active"><span class="nav-icon">📊</span> Dashboard</div>
+  <div class="nav-item nav-soon"><span class="nav-icon">💳</span> Transactions <span class="soon-tag">Soon</span></div>
+  <div class="nav-item nav-soon"><span class="nav-icon">📁</span> Categories <span class="soon-tag">Soon</span></div>
 
   <div class="nav-section">Finance</div>
-  <div class="nav-item" onclick="closeSidebar()"><span class="nav-icon">📈</span> Reports</div>
-  <div class="nav-item" onclick="closeSidebar()"><span class="nav-icon">🎯</span> Budget</div>
-  <div class="nav-item" onclick="closeSidebar()"><span class="nav-icon">📄</span> Statements</div>
+  <div class="nav-item nav-soon"><span class="nav-icon">📈</span> Reports <span class="soon-tag">Soon</span></div>
+  <div class="nav-item nav-soon"><span class="nav-icon">🎯</span> Budget <span class="soon-tag">Soon</span></div>
+  <div class="nav-item nav-soon"><span class="nav-icon">📄</span> Statements <span class="soon-tag">Soon</span></div>
 
   <div class="nav-section">System</div>
-  <div class="nav-item" onclick="closeSidebar()"><span class="nav-icon">🤖</span> AI Assistant</div>
-  <div class="nav-item" onclick="closeSidebar()"><span class="nav-icon">⚙️</span> Settings</div>
+  <div class="nav-item nav-soon"><span class="nav-icon">🤖</span> AI Assistant <span class="soon-tag">Soon</span></div>
+  <div class="nav-item nav-soon"><span class="nav-icon">⚙️</span> Settings <span class="soon-tag">Soon</span></div>
 
   <div class="sidebar-bottom">
     <div class="company-card">
