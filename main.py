@@ -284,4 +284,13 @@ def serve_dashboard(request: Request):
         'value="http://localhost:8000"',
         f'value="{base_url}"',
     )
+@app.get("/", response_class=HTMLResponse)
+def landing():
+    here = pathlib.Path(__file__).parent
+    html_path = here / "landing.html"
+
+    if not html_path.exists():
+        return HTMLResponse("<h2>landing.html not found</h2>", status_code=404)
+
+    return HTMLResponse(html_path.read_text(encoding="utf-8"))
     return HTMLResponse(content=html)
