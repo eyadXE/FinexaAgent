@@ -294,3 +294,56 @@ def landing():
 
     return HTMLResponse(html_path.read_text(encoding="utf-8"))
     return HTMLResponse(content=html)
+
+
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+
+@app.post("/login")
+def login(req: LoginRequest):
+    try:
+        import gspread
+        from google.oauth2.service_account import Credentials
+        from config import GOOGLE_CREDENTIALS_PATH, GOOGLE_SHEET_ID, SHEET_TRANSACTIONS
+
+        # BUT YOU SAID YOU USE POSTGRES — so we use DB instead:
+
+        import os
+        import psycopg2
+
+        conn = psycopg2.connect(os.environ["DATABASE_URL"])
+        cur = conn.cursor()
+
+        cur.execute(
+            "SELECT email, password FROM users WHERE email = %s",
+            (req.email,)
+        )
+
+        user = cur.fetchone()
+
+        if not user:
+            raise HTTPException(status_code=401, detail="User not found")
+
+        db_email, db_password = user
+
+        # ⚠️ TEMPORARY (we will improve later)
+        if req.password != db_password:
+            raise HTTPException(status_code=401, detail="Wrong password")
+
+        return {
+            "success": True,
+            "message": "Login successful",
+            "user": db_email
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+
+
+
+
