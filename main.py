@@ -308,7 +308,12 @@ def login(req: LoginRequest):
     import psycopg2
 
     try:
-        conn = psycopg2.connect(os.environ["DATABASE_URL"])
+        DATABASE_URL = os.environ.get("DATABASE_URL")
+
+        if not DATABASE_URL:
+            return {"success": False, "message": "DATABASE_URL not set in Railway"}
+
+        conn = psycopg2.connect(DATABASE_URL)
         cur = conn.cursor()
 
         cur.execute(
@@ -333,10 +338,7 @@ def login(req: LoginRequest):
         }
 
     except Exception as e:
-        return {
-            "success": False,
-            "message": f"Server error: {str(e)}"
-        }
+        return {"success": False, "message": str(e)}
 
 
 
