@@ -713,7 +713,7 @@ body {
         <span class="dot dot-gray" id="statusDot"></span>
         <span id="statusText">Disconnected</span>
       </div>
-      <input class="api-input" id="apiUrl" value="http://localhost:8000" placeholder="API URL"/>
+      <input class="api-input" id="apiUrl" value="" placeholder="API URL"/>
       <button class="btn btn-ghost" onclick="loadAll()"><span id="refreshIcon">↻</span> Refresh</button>
       <button class="btn btn-primary" onclick="loadAll()">Connect</button>
     </div>
@@ -729,7 +729,7 @@ body {
         <div class="error-banner-msg" id="errorMsg">—</div>
         <div class="error-banner-hint">
           Make sure the server is running: <code>python main.py</code><br>
-          Then open: <code>http://localhost:8000/ui</code> — do <strong>not</strong> open the HTML file directly from disk.<br>
+          Then open <code id="hintUrl">http://localhost:8000/ui</code> in your browser — do <strong>not</strong> open the HTML file directly from disk.<br>
           If deployed, paste your Railway / Render URL into the API URL box above and click <strong>Connect</strong>.
         </div>
       </div>
@@ -879,7 +879,29 @@ Chart.defaults.font.size = 11;
 Chart.defaults.color = '#64748b';
 Chart.defaults.borderColor = '#e2e6ef';
 
-const API = () => (document.getElementById('apiUrl').value || 'http://localhost:8000').replace(/\/$/, '');
+/**
+ * Returns the API base URL.
+ * Priority: user-typed value → page origin (when served by FastAPI) → localhost fallback.
+ * Always upgrades http: → https: if the page itself is on https: (fixes Railway mixed-content).
+ */
+function resolveApiUrl() {
+  const input = document.getElementById('apiUrl').value.trim().replace(/\/$/, '');
+  let url;
+  if (input) {
+    url = input;
+  } else if (location.protocol !== 'file:' && location.hostname !== '') {
+    // Served by FastAPI — use same origin (relative would also work but absolute is clearer)
+    url = location.origin;
+  } else {
+    url = 'http://localhost:8000';
+  }
+  // Mixed-content guard: page is HTTPS → API must also be HTTPS
+  if (location.protocol === 'https:' && url.startsWith('http:')) {
+    url = 'https:' + url.slice(5);
+  }
+  return url;
+}
+const API = () => resolveApiUrl();
 const fmt = n => n >= 1000000 ? (n/1000000).toFixed(1)+'M' : n >= 1000 ? (n/1000).toFixed(1)+'K' : (+n).toFixed(0);
 const fmtN = n => (+n).toLocaleString('en-EG', {minimumFractionDigits:0, maximumFractionDigits:0});
 
@@ -891,6 +913,9 @@ function setStatus(ok, msg) {
   const banner = document.getElementById('errorBanner');
   if (!ok) {
     document.getElementById('errorMsg').textContent = msg || 'Unknown error';
+    // Show the correct /ui URL in the hint
+    const hintUrl = document.getElementById('hintUrl');
+    if (hintUrl) hintUrl.textContent = resolveApiUrl() + '/ui';
     banner.classList.add('show');
   } else {
     banner.classList.remove('show');
@@ -1173,6 +1198,10 @@ function fixGrid3Span() {
 }
 window.addEventListener('resize', fixGrid3Span);
 fixGrid3Span();
+
+/* ── Init ── */
+// Pre-fill API URL box with the resolved origin so user can see/edit it
+document.getElementById('apiUrl').value = resolveApiUrl();
 
 loadAll();
 setInterval(loadAll, 30000);
