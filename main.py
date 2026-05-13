@@ -260,30 +260,24 @@ def fix_account_codes():
 # ── Serve dashboard at /ui ─────────────────────────────────────────────────────
 @app.get("/ui", response_class=HTMLResponse)
 def serve_dashboard(request: Request):
-    """
-    Serve the dashboard HTML with the correct API URL auto-injected.
-    Accessible at: https://your-railway-url.up.railway.app/ui
-    """
-    # Find dashboard.html (same folder as main.py)
     here = pathlib.Path(__file__).parent
-    candidates = [
-        here / "dashboard.html",
-        here.parent / "dashboard.html",
-        pathlib.Path("/mnt/user-data/outputs/dashboard.html"),
-    ]
-    html_path = next((p for p in candidates if p.exists()), None)
 
-    if not html_path:
-        return HTMLResponse("<h2>dashboard.html not found — place it in the same folder as main.py</h2>", status_code=404)
+    html_path = here / "dashboard.html"
+
+    if not html_path.exists():
+        return HTMLResponse("<h2>dashboard.html not found</h2>", status_code=404)
 
     html = html_path.read_text(encoding="utf-8")
 
-    # Auto-inject the correct API base URL so it works when deployed
     base_url = str(request.base_url).rstrip("/")
+
     html = html.replace(
-        'value="http://localhost:8000"',
-        f'value="{base_url}"',
+        'http://localhost:8000',
+        base_url
     )
+
+    return HTMLResponse(content=html)
+    
 @app.get("/", response_class=HTMLResponse)
 def landing():
     here = pathlib.Path(__file__).parent
