@@ -304,16 +304,10 @@ class LoginRequest(BaseModel):
 
 @app.post("/login")
 def login(req: LoginRequest):
+    import os
+    import psycopg2
+
     try:
-        import gspread
-        from google.oauth2.service_account import Credentials
-        from config import GOOGLE_CREDENTIALS_PATH, GOOGLE_SHEET_ID, SHEET_TRANSACTIONS
-
-        # BUT YOU SAID YOU USE POSTGRES — so we use DB instead:
-
-        import os
-        import psycopg2
-
         conn = psycopg2.connect(os.environ["DATABASE_URL"])
         cur = conn.cursor()
 
@@ -325,13 +319,12 @@ def login(req: LoginRequest):
         user = cur.fetchone()
 
         if not user:
-            raise HTTPException(status_code=401, detail="User not found")
+            return {"success": False, "message": "User not found"}
 
         db_email, db_password = user
 
-        # ⚠️ TEMPORARY (we will improve later)
         if req.password != db_password:
-            raise HTTPException(status_code=401, detail="Wrong password")
+            return {"success": False, "message": "Wrong password"}
 
         return {
             "success": True,
@@ -340,7 +333,7 @@ def login(req: LoginRequest):
         }
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        return {"success": False, "message": str(e)}
 
 
 
