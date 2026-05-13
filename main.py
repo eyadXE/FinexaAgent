@@ -333,7 +333,10 @@ def login(req: LoginRequest):
         }
 
     except Exception as e:
-        return {"success": False, "message": str(e)}
+        return {
+            "success": False,
+            "message": f"Server error: {str(e)}"
+        }
 
 
 
