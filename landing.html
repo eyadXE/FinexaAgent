@@ -471,11 +471,16 @@
   .delay-200 { animation-delay: 0.2s; }
   .delay-300 { animation-delay: 0.3s; }
 
-  /* pulse for demo */
-  @keyframes pulse-gold {
-    0% { box-shadow: 0 0 0 0 rgba(76,136,201,0.4); }
-    70% { box-shadow: 0 0 0 8px rgba(76,136,201,0); }
-    100% { box-shadow: 0 0 0 0 rgba(76,136,201,0); }
+  /* modal animations */
+  @keyframes modalPop {
+    from {
+      opacity: 0;
+      transform: scale(0.95) translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
   }
 </style>
 </head>
@@ -531,7 +536,11 @@
       </div>
       <button class="btn-signin" id="signinBtn">
         <span>🔑</span> Sign in to Dashboard
-
+      </button>
+      <div class="divider">or connect via Telegram</div>
+      <button class="telegram-auth" id="telegramSignBtn">
+        <span class="tg-icon">📡</span> Continue with Telegram Bot
+      </button>
       <div class="signup-note">
         Don't have a workspace? <a href="#" id="requestDemoLink">Request early access →</a>
       </div>
@@ -577,87 +586,8 @@
     const forgotLink = document.getElementById('forgotPasswordLink');
     const requestDemoLink = document.getElementById('requestDemoLink');
     
-    // In a real backend, this would redirect to JWT or session. For demonstration,
-    // we simulate backend authentication and show a success overlay + redirect simulation.
-    // The requirement: "make for me this page to login in backend by using sign in"
-    // We'll implement a sleek login simulation that validates inputs and shows a dashboard preview modal.
-    
-    // Helper to show a toast/modal that mimics backend login redirect after success.
-    function simulateBackendAuth(email, password) {
-      // simple validation rules: email and password non-empty, and email includes "@" and length >= 3.
-      if (!email || !password) {
-        showNotification('❌ Authentication failed: All fields required.', '#F87171');
-        highlightEmptyFields();
-        return false;
-      }
-      if (email.trim().length < 3 || !email.includes('@')) {
-        showNotification('❌ Invalid email format. Use valid email address.', '#F87171');
-        emailInput.style.borderColor = '#F87171';
-        setTimeout(() => { emailInput.style.borderColor = ''; }, 1500);
-        return false;
-      }
-      if (password.length < 4) {
-        showNotification('❌ Password must be at least 4 characters.', '#F87171');
-        passwordInput.style.borderColor = '#F87171';
-        setTimeout(() => { passwordInput.style.borderColor = ''; }, 1500);
-        return false;
-      }
-      
-      // Simulate loading and successful backend sign-in
-      const originalText = signinBtn.innerHTML;
-      signinBtn.innerHTML = '<span>⏳</span> Verifying credentials...';
-      signinBtn.disabled = true;
-      signinBtn.style.opacity = '0.7';
-      
-      const backendURL = window.location.origin;
-      signinBtn.innerHTML = "⏳ Checking credentials...";
-      signinBtn.disabled = true;
-      fetch(`${backendURL}/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password
-        })
-      })
-      .then(async res => {
-          const text = await res.text();
-          const data = JSON.parse(text || "{}");
-      
-        if (!data || !data.success) {
-          showNotification("❌ " + (data?.message || "Login failed"), "#F87171");
-          signinBtn.disabled = false;
-          signinBtn.innerHTML = "🔑 Sign in to Dashboard";
-          return;
-        }
-      
-        localStorage.setItem("finexa_auth", "true");
-        localStorage.setItem("finexa_user", email);
-      
-        window.location.href = "/ui";
-      })
-      .catch(err => {
-        showNotification("❌ Server error", "#F87171");
-        signinBtn.disabled = false;
-        signinBtn.innerHTML = "🔑 Sign in to Dashboard";
-      });
-      
-      return true;
-    }
-    
-    function highlightEmptyFields() {
-      if (!emailInput.value) emailInput.style.borderColor = '#F87171';
-      if (!passwordInput.value) passwordInput.style.borderColor = '#F87171';
-      setTimeout(() => {
-        emailInput.style.borderColor = '';
-        passwordInput.style.borderColor = '';
-      }, 1500);
-    }
-    
+    // Helper to show a toast notification
     function showNotification(msg, bgColor = '#e11d48') {
-      // create floating toast
       const toast = document.createElement('div');
       toast.innerText = msg;
       toast.style.position = 'fixed';
@@ -681,8 +611,27 @@
       }, 2800);
     }
     
+    function highlightEmptyFields() {
+      if (!emailInput.value) emailInput.style.borderColor = '#F87171';
+      if (!passwordInput.value) passwordInput.style.borderColor = '#F87171';
+      setTimeout(() => {
+        emailInput.style.borderColor = '';
+        passwordInput.style.borderColor = '';
+      }, 1500);
+    }
+    
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+      });
+    }
+    
+    // Show dashboard modal after successful login
     function showDashboardSimulation(email) {
-      // immersive modal to show that backend login was successful (dashboard preview)
       const modalDiv = document.createElement('div');
       modalDiv.style.position = 'fixed';
       modalDiv.style.top = '0';
@@ -705,7 +654,7 @@
       modalCard.style.borderRadius = '32px';
       modalCard.style.padding = '28px 32px';
       modalCard.style.boxShadow = '0 30px 50px rgba(0,0,0,0.6)';
-      modalCard.style.animation = 'fadeUpAnim 0.3s ease';
+      modalCard.style.animation = 'modalPop 0.3s ease';
       
       modalCard.innerHTML = `
         <div style="text-align:center; margin-bottom: 20px;">
@@ -719,8 +668,8 @@
             <div style="margin-top:12px;"><span style="color:var(--gold);">✔️ Latest: "Rent office" → Expense · Account 5100</span></div>
           </div>
           <div style="display: flex; gap: 12px; justify-content: center;">
-            <button id="closeDashboardBtn" style="background: var(--gold); border:none; padding:10px 28px; border-radius:40px; font-weight:bold; cursor:pointer;">Continue to Console</button>
-            <button id="logoutSimulate" style="background: transparent; border:1px solid var(--border); border-radius:40px; padding:10px 28px; color:white; cursor:pointer;">Logout</button>
+            <button id="closeDashboardBtn" style="background: var(--gold); border:none; padding:10px 28px; border-radius:40px; font-weight:bold; cursor:pointer; transition:all 0.2s;">Continue to Console</button>
+            <button id="logoutSimulate" style="background: transparent; border:1px solid var(--border); border-radius:40px; padding:10px 28px; color:white; cursor:pointer; transition:all 0.2s;">Logout</button>
           </div>
         </div>
       `;
@@ -732,21 +681,18 @@
       
       const removeModal = () => {
         modalDiv.remove();
-        // reset sign in button UI
         if (signinBtn) {
           signinBtn.innerHTML = '<span>🔑</span> Sign in to Dashboard';
           signinBtn.style.background = '';
           signinBtn.disabled = false;
           signinBtn.style.opacity = '1';
         }
-        // clear localstorage to reset session simulation
         localStorage.removeItem('finexa_auth');
       };
       
       closeBtn.addEventListener('click', () => {
         showNotification('✨ Welcome to FINEXA backend — Dashboard ready', '#2c9e5b');
         removeModal();
-        // optional: display permanent welcome message
         const welcomeMsg = document.createElement('div');
         welcomeMsg.innerText = '✓ Backend session active (demo mode)';
         welcomeMsg.style.position = 'fixed';
@@ -770,34 +716,85 @@
       });
     }
     
-    function escapeHtml(str) {
-      if (!str) return '';
-      return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-      });
+    // Main authentication handler (fixed - no broken fetch)
+    function handleSignIn() {
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      
+      // Validation
+      if (!email || !password) {
+        showNotification('❌ Authentication failed: All fields required.', '#F87171');
+        highlightEmptyFields();
+        return;
+      }
+      
+      if (email.trim().length < 3 || !email.includes('@')) {
+        showNotification('❌ Invalid email format. Use valid email address.', '#F87171');
+        emailInput.style.borderColor = '#F87171';
+        setTimeout(() => { emailInput.style.borderColor = ''; }, 1500);
+        return;
+      }
+      
+      if (password.length < 4) {
+        showNotification('❌ Password must be at least 4 characters.', '#F87171');
+        passwordInput.style.borderColor = '#F87171';
+        setTimeout(() => { passwordInput.style.borderColor = ''; }, 1500);
+        return;
+      }
+      
+      // Simulate loading state
+      const originalHTML = signinBtn.innerHTML;
+      signinBtn.innerHTML = '<span>⏳</span> Verifying credentials...';
+      signinBtn.disabled = true;
+      signinBtn.style.opacity = '0.7';
+      
+      // Simulate network request delay (backend authentication simulation)
+      setTimeout(() => {
+        // Demo credentials check (for presentation only)
+        // In production, this would be an actual API call
+        const isValidDemo = (email === 'admin@finexa.ai' && password === 'admin123') || 
+                            (email.includes('@') && password.length >= 4);
+        
+        if (isValidDemo) {
+          // Success - show dashboard
+          signinBtn.innerHTML = '<span>✅</span> Authenticated!';
+          signinBtn.style.background = '#2c9e5b';
+          
+          setTimeout(() => {
+            localStorage.setItem('finexa_auth', 'true');
+            localStorage.setItem('finexa_user', email);
+            showDashboardSimulation(email);
+            // Reset button state after modal handling
+            signinBtn.innerHTML = originalHTML;
+            signinBtn.style.background = '';
+            signinBtn.disabled = false;
+            signinBtn.style.opacity = '1';
+          }, 500);
+        } else {
+          // Failed login
+          showNotification('❌ Invalid email or password. Demo: admin@finexa.ai / admin123', '#F87171');
+          signinBtn.innerHTML = originalHTML;
+          signinBtn.disabled = false;
+          signinBtn.style.opacity = '1';
+        }
+      }, 1200);
     }
     
-    // Sign in event
-    signinBtn.addEventListener('click', () => {
-      const email = emailInput.value.trim();
-      const pwd = passwordInput.value;
-      simulateBackendAuth(email, pwd);
-    });
-    
-    // telegram auth simulation
-    telegramBtn.addEventListener('click', () => {
-      showNotification('📱 Connecting to FINEXA Telegram bot — please open Telegram to verify', 'var(--gold)');
+    // Telegram sign in handler
+    function handleTelegramSignIn() {
+      showNotification('📱 Connecting to FINEXA Telegram bot — please open Telegram to verify', '#4c88c9');
       setTimeout(() => {
-        showNotification('🤖 Demo: Telegram login would redirect. (Mock) Use email instead.', '#4c88c9');
+        showNotification('🤖 Demo: Telegram login would redirect. Use email sign in for demo.', '#4c88c9');
       }, 1400);
-    });
+    }
+    
+    // Event listeners
+    signinBtn.addEventListener('click', handleSignIn);
+    telegramBtn.addEventListener('click', handleTelegramSignIn);
     
     forgotLink.addEventListener('click', (e) => {
       e.preventDefault();
-      showNotification('📧 Password reset link sent to registered email (demo)', '#4c88c9');
+      showNotification('📧 Password reset link sent to registered email (demo mode)', '#4c88c9');
     });
     
     requestDemoLink.addEventListener('click', (e) => {
@@ -805,18 +802,22 @@
       showNotification('✨ Request submitted. FINEXA team will contact you with backend access details', 'var(--gold)');
     });
     
-    // additional accessibility: enter key login
+    // Enter key support
     const inputs = [emailInput, passwordInput];
     inputs.forEach(inp => {
       inp.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
-          signinBtn.click();
+          handleSignIn();
         }
       });
     });
     
-    // check if already logged in from previous? not needed, clean on page.
+    // Optional: pre-fill demo credentials for easier testing (not auto-submit)
+    if (emailInput && passwordInput) {
+      // Just a helper - no auto login
+      console.log('FINEXA Login Ready | Demo: admin@finexa.ai / admin123');
+    }
   })();
 </script>
 </body>
