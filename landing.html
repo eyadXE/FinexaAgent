@@ -627,7 +627,8 @@
         })
       })
       .then(async res => {
-        const data = await res.json().catch(() => null);
+          const text = await res.text();
+          const data = JSON.parse(text || "{}");
       
         if (!data || !data.success) {
           showNotification("❌ " + (data?.message || "Login failed"), "#F87171");
