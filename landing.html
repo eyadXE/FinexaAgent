@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<title>FINEXA — AI Finance Recorder | Admin Sign In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  :root {
+    --gold: #4c88c9;
+    --gold-light: #6eade8;
+    --gold-dim: rgba(76, 136, 201, 0.12);
+    --gold-soft: rgba(76, 136, 201, 0.2);
+    --bg: #080C18;
+    --bg2: #0E1424;
+    --bg3: #141A2E;
+    --bg-card: #0F1626;
+    --text: #F0EDE4;
+    --text-muted: #8A8EA8;
+    --border: rgba(76, 136, 201, 0.2);
+    --radius: 16px;
+    --shadow-sm: 0 20px 35px -12px rgba(0,0,0,0.5);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  /* subtle grid pattern */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(76,136,201,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(76,136,201,0.03) 1px, transparent 1px);
+    background-size: 55px 55px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* navigation */
+  .glass-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 0 6vw;
+    height: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(8,12,24,0.85);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: -0.01em;
+    text-decoration: none;
+  }
+
+  .logo-icon {
+    width: 38px;
+    height: 38px;
+    border: 1.5px solid var(--gold);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+
+  .nav-buttons {
+    display: flex;
+    gap: 12px;
+  }
+
+  .btn-outline-light {
+    background: transparent;
+    border: 1.5px solid var(--gold);
+    color: var(--gold);
+    padding: 8px 22px;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .btn-outline-light:hover {
+    background: var(--gold-dim);
+    transform: translateY(-2px);
+  }
+
+  .btn-gold-solid {
+    background: var(--gold);
+    border: none;
+    color: #080C18;
+    padding: 8px 22px;
+    border-radius: 40px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .btn-gold-solid:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+  }
+
+  /* HERO section short & elegant */
+  .hero-mini {
+    position: relative;
+    z-index: 1;
+    padding: 140px 6vw 60px;
+    text-align: center;
+  }
+
+  .hero-mini h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(38px, 6vw, 68px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  .hero-mini h1 em {
+    color: var(--gold);
+    font-style: italic;
+  }
+
+  .hero-mini p {
+    max-width: 580px;
+    margin: 20px auto 0;
+    color: var(--text-muted);
+    font-size: 18px;
+  }
+
+  /* LOGIN CARD (backend style) */
+  .login-backend-section {
+    z-index: 2;
+    position: relative;
+    padding: 20px 6vw 90px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .login-backend-card {
+    max-width: 500px;
+    width: 100%;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 32px;
+    backdrop-filter: blur(4px);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s;
+    overflow: hidden;
+  }
+
+  .card-header {
+    background: linear-gradient(135deg, rgba(76,136,201,0.12), rgba(8,12,24,0.6));
+    padding: 32px 36px 20px;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .badge-admin {
+    display: inline-flex;
+    background: var(--gold-dim);
+    border-radius: 60px;
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+
+  .card-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    margin: 6px 0 4px;
+  }
+
+  .card-header p {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .login-form {
+    padding: 32px 36px 36px;
+  }
+
+  .input-group {
+    margin-bottom: 24px;
+  }
+
+  .input-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-muted);
+    letter-spacing: 0.3px;
+  }
+
+  .input-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .input-icon input {
+    width: 100%;
+    background: var(--bg3);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 16px;
+    font-size: 15px;
+    color: var(--text);
+    font-family: inherit;
+    transition: all 0.2s;
+    outline: none;
+  }
+
+  .input-icon input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(76,136,201,0.15);
+  }
+
+  .input-icon input::placeholder {
+    color: rgba(138,142,168,0.5);
+  }
+
+  .forgot-link {
+    text-align: right;
+    margin-top: -8px;
+    margin-bottom: 24px;
+  }
+
+  .forgot-link a {
+    font-size: 12px;
+    color: var(--gold);
+    text-decoration: none;
+    opacity: 0.8;
+  }
+
+  .forgot-link a:hover { opacity: 1; }
+
+  .btn-signin {
+    width: 100%;
+    background: var(--gold);
+    border: none;
+    padding: 14px;
+    border-radius: 40px;
+    font-weight: 700;
+    font-size: 16px;
+    color: #080C18;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .btn-signin:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(76,136,201,0.2);
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 28px 0 20px;
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .telegram-auth {
+    width: 100%;
+    background: rgba(34,158,217,0.08);
+    border: 1px solid var(--border);
+    border-radius: 40px;
+    padding: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .telegram-auth:hover {
+    background: rgba(76,136,201,0.1);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .tg-icon {
+    background: #229ED9;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: bold;
+    color: white;
+  }
+
+  .signup-note {
+    text-align: center;
+    margin-top: 28px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .signup-note a {
+    color: var(--gold);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  /* features preview (compact) */
+  .features-compact {
+    max-width: 1100px;
+    margin: 0 auto 80px;
+    padding: 0 6vw;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+    z-index: 2;
+    position: relative;
+  }
+
+  .ft-card {
+    background: rgba(14,20,36,0.6);
+    backdrop-filter: blur(4px);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 24px;
+    transition: 0.2s;
+  }
+
+  .ft-card:hover { border-color: var(--gold); background: var(--bg3); }
+
+  .ft-icon {
+    font-size: 28px;
+    margin-bottom: 16px;
+  }
+
+  .ft-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  .ft-card p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 6vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--text-muted);
+    z-index: 2;
+    position: relative;
+  }
+
+  .footer-links a {
+    color: var(--gold);
+    text-decoration: none;
+    margin-left: 24px;
+  }
+
+  @media (max-width: 700px) {
+    .nav-links, .nav-buttons { display: none; }
+    .glass-nav { justify-content: space-between; }
+    .login-form { padding: 24px 24px 32px; }
+    .card-header { padding: 24px 24px 16px; }
+    .features-compact { gap: 16px; }
+  }
+
+  /* animations */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUpAnim 0.6s forwards;
+  }
+
+  @keyframes fadeUpAnim {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .delay-100 { animation-delay: 0.1s; }
+  .delay-200 { animation-delay: 0.2s; }
+  .delay-300 { animation-delay: 0.3s; }
+
+  /* pulse for demo */
+  @keyframes pulse-gold {
+    0% { box-shadow: 0 0 0 0 rgba(76,136,201,0.4); }
+    70% { box-shadow: 0 0 0 8px rgba(76,136,201,0); }
+    100% { box-shadow: 0 0 0 0 rgba(76,136,201,0); }
+  }
+</style>
+</head>
+<body>
+
+<nav class="glass-nav">
+  <a href="#" class="logo">
+    <div class="logo-icon">FX</div>
+    FINEXA
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Capabilities</a></li>
+    <li><a href="#security">Security</a></li>
+    <li><a href="#login-panel">Backend</a></li>
+  </ul>
+  <div class="nav-buttons">
+    <a href="#login-panel" class="btn-outline-light">Sign In</a>
+    <a href="#login-panel" class="btn-gold-solid">Access Console</a>
+  </div>
+</nav>
+
+<!-- Hero intro -->
+<section class="hero-mini">
+  <div class="fade-up">
+    <h1>AI Finance Backend <br><em>Intelligent control</em></h1>
+    <p>FINEXA gives you a secure sign‑in to your financial dashboard — manage transactions, review AI classification, and generate reports.</p>
+  </div>
+</section>
+
+<!-- BACKEND LOGIN PANEL (sign in) - main component -->
+<section class="login-backend-section" id="login-panel">
+  <div class="login-backend-card fade-up delay-100">
+    <div class="card-header">
+      <div class="badge-admin">🔐 SECURE BACKEND ACCESS</div>
+      <h2>Administrator Sign In</h2>
+      <p>Enter your credentials to access the FINEXA intelligence suite</p>
+    </div>
+    <div class="login-form">
+      <div class="input-group">
+        <label>Email address / Username</label>
+        <div class="input-icon">
+          <input type="email" id="backend-email" placeholder="admin@finexa.ai" autocomplete="email">
+        </div>
+      </div>
+      <div class="input-group">
+        <label>Password</label>
+        <div class="input-icon">
+          <input type="password" id="backend-password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+      </div>
+      <div class="forgot-link">
+        <a href="#" id="forgotPasswordLink">Recover access →</a>
+      </div>
+      <button class="btn-signin" id="signinBtn">
+        <span>🔑</span> Sign in to Dashboard
+      </button>
+      <div class="divider">or connect via Telegram</div>
+      <button class="telegram-auth" id="telegramSignBtn">
+        <span class="tg-icon">📡</span> Continue with Telegram Bot
+      </button>
+      <div class="signup-note">
+        Don't have a workspace? <a href="#" id="requestDemoLink">Request early access →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- additional feature previews (to make login context richer) -->
+<div class="features-compact" id="features">
+  <div class="ft-card fade-up delay-200">
+    <div class="ft-icon">📊</div>
+    <h4>Real-time dashboard</h4>
+    <p>After sign in: 6 financial KPIs, AI narratives & budget alerts updated live.</p>
+  </div>
+  <div class="ft-card fade-up delay-200">
+    <div class="ft-icon">🤖</div>
+    <h4>LLM validation engine</h4>
+    <p>Every transaction classified against 40+ accounts, with confidence scoring.</p>
+  </div>
+  <div class="ft-card fade-up delay-300">
+    <div class="ft-icon">📁</div>
+    <h4>Google Sheets sync</h4>
+    <p>Seamless export & financial statements: Income statement, Cash Flow.</p>
+  </div>
+</div>
+
+<footer>
+  <div>© 2025 FINEXA — AI Finance Recorder</div>
+  <div class="footer-links">
+    <a href="#">Documentation</a>
+    <a href="#">GitHub</a>
+    <a href="#">Security</a>
+  </div>
+</footer>
+
+<script>
+  (function() {
+    // DOM elements
+    const emailInput = document.getElementById('backend-email');
+    const passwordInput = document.getElementById('backend-password');
+    const signinBtn = document.getElementById('signinBtn');
+    const telegramBtn = document.getElementById('telegramSignBtn');
+    const forgotLink = document.getElementById('forgotPasswordLink');
+    const requestDemoLink = document.getElementById('requestDemoLink');
+    
+    // In a real backend, this would redirect to JWT or session. For demonstration,
+    // we simulate backend authentication and show a success overlay + redirect simulation.
+    // The requirement: "make for me this page to login in backend by using sign in"
+    // We'll implement a sleek login simulation that validates inputs and shows a dashboard preview modal.
+    
+    // Helper to show a toast/modal that mimics backend login redirect after success.
+    function simulateBackendAuth(email, password) {
+      // simple validation rules: email and password non-empty, and email includes "@" and length >= 3.
+      if (!email || !password) {
+        showNotification('❌ Authentication failed: All fields required.', '#F87171');
+        highlightEmptyFields();
+        return false;
+      }
+      if (email.trim().length < 3 || !email.includes('@')) {
+        showNotification('❌ Invalid email format. Use valid email address.', '#F87171');
+        emailInput.style.borderColor = '#F87171';
+        setTimeout(() => { emailInput.style.borderColor = ''; }, 1500);
+        return false;
+      }
+      if (password.length < 4) {
+        showNotification('❌ Password must be at least 4 characters.', '#F87171');
+        passwordInput.style.borderColor = '#F87171';
+        setTimeout(() => { passwordInput.style.borderColor = ''; }, 1500);
+        return false;
+      }
+      
+      // Simulate loading and successful backend sign-in
+      const originalText = signinBtn.innerHTML;
+      signinBtn.innerHTML = '<span>⏳</span> Verifying credentials...';
+      signinBtn.disabled = true;
+      signinBtn.style.opacity = '0.7';
+      
+      setTimeout(() => {
+        // back-end successful sign-in: store a fake session and show dashboard redirection simulation
+        localStorage.setItem('finexa_auth', 'true');
+        localStorage.setItem('finexa_user', email);
+        
+        signinBtn.innerHTML = '<span>✅</span> Authenticated · Redirecting';
+        signinBtn.style.background = '#2c9e5b';
+        
+        // simulate redirect to the backend dashboard (in real production you'd redirect)
+        setTimeout(() => {
+          // Create a dashboard overlay to illustrate backend login success (since it's a front-end demo)
+          showDashboardSimulation(email);
+          // reset button after simulation but not needed because dashboard replaces content
+          signinBtn.disabled = false;
+          signinBtn.style.opacity = '1';
+        }, 1000);
+      }, 1200);
+      
+      return true;
+    }
+    
+    function highlightEmptyFields() {
+      if (!emailInput.value) emailInput.style.borderColor = '#F87171';
+      if (!passwordInput.value) passwordInput.style.borderColor = '#F87171';
+      setTimeout(() => {
+        emailInput.style.borderColor = '';
+        passwordInput.style.borderColor = '';
+      }, 1500);
+    }
+    
+    function showNotification(msg, bgColor = '#e11d48') {
+      // create floating toast
+      const toast = document.createElement('div');
+      toast.innerText = msg;
+      toast.style.position = 'fixed';
+      toast.style.bottom = '24px';
+      toast.style.left = '50%';
+      toast.style.transform = 'translateX(-50%)';
+      toast.style.backgroundColor = bgColor;
+      toast.style.color = 'white';
+      toast.style.padding = '12px 24px';
+      toast.style.borderRadius = '60px';
+      toast.style.fontSize = '14px';
+      toast.style.fontWeight = '500';
+      toast.style.zIndex = '9999';
+      toast.style.backdropFilter = 'blur(8px)';
+      toast.style.boxShadow = '0 10px 20px rgba(0,0,0,0.3)';
+      toast.style.border = '1px solid rgba(255,255,255,0.2)';
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 400);
+      }, 2800);
+    }
+    
+    function showDashboardSimulation(email) {
+      // immersive modal to show that backend login was successful (dashboard preview)
+      const modalDiv = document.createElement('div');
+      modalDiv.style.position = 'fixed';
+      modalDiv.style.top = '0';
+      modalDiv.style.left = '0';
+      modalDiv.style.width = '100%';
+      modalDiv.style.height = '100%';
+      modalDiv.style.backgroundColor = 'rgba(0,0,0,0.85)';
+      modalDiv.style.backdropFilter = 'blur(12px)';
+      modalDiv.style.zIndex = '2000';
+      modalDiv.style.display = 'flex';
+      modalDiv.style.alignItems = 'center';
+      modalDiv.style.justifyContent = 'center';
+      modalDiv.style.padding = '20px';
+      
+      const modalCard = document.createElement('div');
+      modalCard.style.maxWidth = '550px';
+      modalCard.style.width = '100%';
+      modalCard.style.backgroundColor = 'var(--bg2)';
+      modalCard.style.border = '1px solid var(--gold)';
+      modalCard.style.borderRadius = '32px';
+      modalCard.style.padding = '28px 32px';
+      modalCard.style.boxShadow = '0 30px 50px rgba(0,0,0,0.6)';
+      modalCard.style.animation = 'fadeUpAnim 0.3s ease';
+      
+      modalCard.innerHTML = `
+        <div style="text-align:center; margin-bottom: 20px;">
+          <div style="background: var(--gold-dim); width: 64px; height:64px; margin:0 auto 16px; border-radius:60px; display:flex; align-items:center; justify-content:center; font-size:32px;">📊</div>
+          <h3 style="font-family: 'Playfair Display',serif; font-size:28px; color:var(--gold);">Backend Dashboard</h3>
+          <p style="color:var(--text-muted); margin-top:8px;">Signed in as <strong style="color:white;">${escapeHtml(email)}</strong></p>
+          <div style="background: rgba(76,136,201,0.1); border-radius: 20px; padding:16px; margin: 24px 0; text-align:left;">
+            <div style="display:flex; justify-content:space-between;"><span>💰 Revenue (MTD)</span><strong>EGP 142,800</strong></div>
+            <div style="display:flex; justify-content:space-between; margin-top:10px;"><span>📉 Expenses</span><strong>EGP 87,200</strong></div>
+            <div style="display:flex; justify-content:space-between; margin-top:10px;"><span>🧠 AI Classifications</span><strong>43 transactions</strong></div>
+            <div style="margin-top:12px;"><span style="color:var(--gold);">✔️ Latest: "Rent office" → Expense · Account 5100</span></div>
+          </div>
+          <div style="display: flex; gap: 12px; justify-content: center;">
+            <button id="closeDashboardBtn" style="background: var(--gold); border:none; padding:10px 28px; border-radius:40px; font-weight:bold; cursor:pointer;">Continue to Console</button>
+            <button id="logoutSimulate" style="background: transparent; border:1px solid var(--border); border-radius:40px; padding:10px 28px; color:white; cursor:pointer;">Logout</button>
+          </div>
+        </div>
+      `;
+      modalDiv.appendChild(modalCard);
+      document.body.appendChild(modalDiv);
+      
+      const closeBtn = document.getElementById('closeDashboardBtn');
+      const logoutSim = document.getElementById('logoutSimulate');
+      
+      const removeModal = () => {
+        modalDiv.remove();
+        // reset sign in button UI
+        if (signinBtn) {
+          signinBtn.innerHTML = '<span>🔑</span> Sign in to Dashboard';
+          signinBtn.style.background = '';
+          signinBtn.disabled = false;
+          signinBtn.style.opacity = '1';
+        }
+        // clear localstorage to reset session simulation
+        localStorage.removeItem('finexa_auth');
+      };
+      
+      closeBtn.addEventListener('click', () => {
+        showNotification('✨ Welcome to FINEXA backend — Dashboard ready', '#2c9e5b');
+        removeModal();
+        // optional: display permanent welcome message
+        const welcomeMsg = document.createElement('div');
+        welcomeMsg.innerText = '✓ Backend session active (demo mode)';
+        welcomeMsg.style.position = 'fixed';
+        welcomeMsg.style.bottom = '80px';
+        welcomeMsg.style.right = '20px';
+        welcomeMsg.style.backgroundColor = 'var(--bg3)';
+        welcomeMsg.style.border = '1px solid var(--gold)';
+        welcomeMsg.style.borderRadius = '50px';
+        welcomeMsg.style.padding = '8px 18px';
+        welcomeMsg.style.fontSize = '12px';
+        welcomeMsg.style.zIndex = '1000';
+        document.body.appendChild(welcomeMsg);
+        setTimeout(() => welcomeMsg.remove(), 4000);
+      });
+      
+      logoutSim.addEventListener('click', () => {
+        removeModal();
+        showNotification('🔐 Signed out from backend. Session cleared.', '#4c88c9');
+        if (emailInput) emailInput.value = '';
+        if (passwordInput) passwordInput.value = '';
+      });
+    }
+    
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+      });
+    }
+    
+    // Sign in event
+    signinBtn.addEventListener('click', () => {
+      const email = emailInput.value.trim();
+      const pwd = passwordInput.value;
+      simulateBackendAuth(email, pwd);
+    });
+    
+    // telegram auth simulation
+    telegramBtn.addEventListener('click', () => {
+      showNotification('📱 Connecting to FINEXA Telegram bot — please open Telegram to verify', 'var(--gold)');
+      setTimeout(() => {
+        showNotification('🤖 Demo: Telegram login would redirect. (Mock) Use email instead.', '#4c88c9');
+      }, 1400);
+    });
+    
+    forgotLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      showNotification('📧 Password reset link sent to registered email (demo)', '#4c88c9');
+    });
+    
+    requestDemoLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      showNotification('✨ Request submitted. FINEXA team will contact you with backend access details', 'var(--gold)');
+    });
+    
+    // additional accessibility: enter key login
+    const inputs = [emailInput, passwordInput];
+    inputs.forEach(inp => {
+      inp.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          signinBtn.click();
+        }
+      });
+    });
+    
+    // check if already logged in from previous? not needed, clean on page.
+  })();
+</script>
+</body>
+</html>
