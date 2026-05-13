@@ -317,7 +317,7 @@ def login(req: LoginRequest):
         cur = conn.cursor()
 
         cur.execute(
-            "SELECT email, password FROM Users WHERE email = %s",
+            "SELECT email, password FROM users WHERE email = %s",
             (req.email,)
         )
 
