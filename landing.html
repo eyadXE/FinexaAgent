@@ -626,17 +626,16 @@
           password: password
         })
       })
-      .then(res => res.json())
-      .then(data => {
+      .then(async res => {
+        const data = await res.json().catch(() => null);
       
-        if (!data.success) {
-          showNotification("❌ Invalid email or password", "#F87171");
+        if (!data || !data.success) {
+          showNotification("❌ " + (data?.message || "Login failed"), "#F87171");
           signinBtn.disabled = false;
           signinBtn.innerHTML = "🔑 Sign in to Dashboard";
           return;
         }
       
-        // SUCCESS → redirect to dashboard
         localStorage.setItem("finexa_auth", "true");
         localStorage.setItem("finexa_user", email);
       
