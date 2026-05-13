@@ -614,7 +614,7 @@ body {
   .page-subtitle { display: none; }
   .api-input { display: none; }
   .status-pill { display: none; }
-  .btn-ghost { display: none; } /* hide Refresh on mobile, use pull-to-refresh instead */
+  .btn-ghost.topbar-refresh { display: none; } /* hide Refresh on mobile, use pull-to-refresh instead */
 
   /* Content */
   .content { padding: 16px; padding-bottom: calc(var(--mobile-nav-h) + 16px); }
@@ -714,7 +714,7 @@ body {
         <span id="statusText">Disconnected</span>
       </div>
       <input class="api-input" id="apiUrl" value="" placeholder="API URL"/>
-      <button class="btn btn-ghost" onclick="loadAll()"><span id="refreshIcon">↻</span> Refresh</button>
+      <button class="btn btn-ghost topbar-refresh" onclick="loadAll()"><span id="refreshIcon">↻</span> Refresh</button>
       <button class="btn btn-primary" onclick="loadAll()">Connect</button>
     </div>
   </div>
