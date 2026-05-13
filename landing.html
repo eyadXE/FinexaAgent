@@ -613,23 +613,40 @@
       signinBtn.disabled = true;
       signinBtn.style.opacity = '0.7';
       
-      setTimeout(() => {
-        // back-end successful sign-in: store a fake session and show dashboard redirection simulation
-        localStorage.setItem('finexa_auth', 'true');
-        localStorage.setItem('finexa_user', email);
-        
-        signinBtn.innerHTML = '<span>✅</span> Authenticated · Redirecting';
-        signinBtn.style.background = '#2c9e5b';
-        
-        // simulate redirect to the backend dashboard (in real production you'd redirect)
-        setTimeout(() => {
-          // Create a dashboard overlay to illustrate backend login success (since it's a front-end demo)
-          showDashboardSimulation(email);
-          // reset button after simulation but not needed because dashboard replaces content
+      const backendURL = window.location.origin;
+      signinBtn.innerHTML = "⏳ Checking credentials...";
+      signinBtn.disabled = true;
+      fetch(`${backendURL}/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+      
+        if (!data.success) {
+          showNotification("❌ Invalid email or password", "#F87171");
           signinBtn.disabled = false;
-          signinBtn.style.opacity = '1';
-        }, 1000);
-      }, 1200);
+          signinBtn.innerHTML = "🔑 Sign in to Dashboard";
+          return;
+        }
+      
+        // SUCCESS → redirect to dashboard
+        localStorage.setItem("finexa_auth", "true");
+        localStorage.setItem("finexa_user", email);
+      
+        window.location.href = "/ui";
+      })
+      .catch(err => {
+        showNotification("❌ Server error", "#F87171");
+        signinBtn.disabled = false;
+        signinBtn.innerHTML = "🔑 Sign in to Dashboard";
+      });
       
       return true;
     }
