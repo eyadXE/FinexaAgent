@@ -1,0 +1,10 @@
+{
+  "monthly_limits": {
+    "Rent": 2000,
+    "Food": 1500,
+    "Internet": 300,
+    "Transportation": 800,
+    "Marketing": 1000,
+    "Shopping": 700
+  }
+}

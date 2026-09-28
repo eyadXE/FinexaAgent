@@ -1,0 +1,27 @@
+# FinexaAgent — copy/paste run commands (PowerShell)
+# Single terminal. .env already has your real Telegram bot token + Groq key configured -- don't overwrite it.
+# Uses local JSON storage (no Google Sheets/Cloud setup needed), pre-seeded with 21 demo transactions.
+
+python -m venv .venv
+.venv\Scripts\pip install -r requirements.txt
+.venv\Scripts\uvicorn main:app --port 8000
+
+# Open:
+#   Dashboard:  http://localhost:8000/ui
+#   Landing:    http://localhost:8000/
+#   API docs:   http://localhost:8000/docs
+
+# Easiest way to demo the AI agent (no Telegram needed) -- open http://localhost:8000/docs
+# and use the /chat endpoint, or the dashboard's own interface, with messages like:
+#   "دفعت 1500 إيجار النهارده"        -> logs a Rent expense
+#   "استلمت 5000 من عميل"             -> logs Income
+#   "how much did I spend this month" -> real computed summary
+#   "am I overspending?"              -> budget check (flags Food/Internet/Shopping)
+#   "show last 5 transactions"        -> real transaction query
+
+# ---- Optional: wire up the REAL Telegram bot (one manual step, do this yourself) ----
+# ngrok is already installed with your authtoken configured. In a SECOND terminal:
+#   ngrok http 8000
+# Copy the https://...ngrok-free.app URL it prints, put it in .env as:
+#   TELEGRAM_WEBHOOK_URL=https://your-url.ngrok-free.app
+# then restart the uvicorn command above. Message your bot on Telegram directly after that.

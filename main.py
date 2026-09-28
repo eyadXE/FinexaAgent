@@ -1,3 +1,11 @@
+import sys
+if sys.platform == "win32":
+    # Windows console defaults to cp1252, which can't encode the emoji used
+    # in this file's startup/log prints — without this, the app crashes on
+    # startup with UnicodeEncodeError before it ever binds a port.
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 import startup_credentials  # noqa: F401
 """main.py — FastAPI app with built-in Telegram webhook. No n8n needed."""
 
