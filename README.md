@@ -54,6 +54,38 @@ That's it. One message. Full double-entry bookkeeping entry created automaticall
 
 ---
 
+## 📸 Screenshots
+
+**Local dashboard** — real-time KPIs, 6-month income/expense/profit trend, expense breakdown, budget usage, and a live transactions table, all reading from the same data the Telegram bot writes to:
+
+![Finance dashboard overview](images/dashboard-overview.png)
+
+**Multi-modal input in Telegram** — a photo of a physical paper receipt gets OCR'd, extracted, and logged automatically:
+
+![Receipt photo extracted and logged via Telegram](images/telegram-photo-receipt.png)
+
+**Voice notes, transcribed and logged** — an Arabic voice note is transcribed, parsed into a structured transaction, and the button-driven edit flow (no typing field names) is shown mid-correction:
+
+![Voice note transcribed, logged, and being edited via inline buttons](images/telegram-voice-note-edit.png)
+
+**Built-in reporting commands** — `/report`, `/history`, and `/budget` return real computed summaries, a transaction table, and per-category budget status directly in the chat:
+
+![/report, /history, and /budget commands in Telegram](images/telegram-reports-budget.png)
+
+---
+
+## 🧠 Skills Demonstrated
+
+- **Agent architecture judgment, not just agent usage.** Deliberately chose a single-call Classify-then-Dispatch pattern over the more fashionable ReAct loop after weighing latency, cost, and reliability with small/fast models — a real architectural tradeoff decision, not a default.
+- **Programming to an interface.** The storage layer (`sheets.py`) has a stable function-level contract that `tools.py`, `agent.py`, `dashboard.py`, and `telegram_bot.py` all call by name only — the backend can be swapped between Google Sheets and local storage with zero changes to any calling code.
+- **Multi-modal input handling.** Text, voice (Groq Whisper STT), and photo (vision OCR) all normalize into the same structured 14-field transaction schema through one pipeline.
+- **Bilingual NLU in production, not just translation.** Arabic and English (and mixed) input are both parsed into the same structured intent/entity schema, with domain-specific hints (currency, category keywords) engineered directly into the extraction prompt.
+- **An adaptive system that reduces friction over time.** The confidence-scaling memory system (`min(0.95, 0.75 + uses × 0.04)`) means the agent asks fewer clarifying questions the more it's used, instead of re-asking the same thing forever.
+- **Real platform integration, not a chat-completion wrapper.** Native Telegram webhook handling for every update type (text, voice, photo, button taps), bot command registration, typing indicators, duplicate-transaction detection, and a full confirm/edit/undo interaction flow.
+- **Cost-conscious engineering.** A one-line environment variable switches the entire LLM layer between a free local model (Ollama) and a free-tier cloud model (Groq) with no code changes — and the whole system runs for close to $0/month, a real constraint-driven design choice for the target small-business users.
+
+---
+
 ## 💰 Real Cost Reduction — By the Numbers
 
 ### Before Finexa (Typical SME)
@@ -380,6 +412,8 @@ Every transaction stored in Google Sheets contains:
 ---
 
 ## 🚀 Setup Guide
+
+> **Fastest path to trying this locally:** the app also runs against a local JSON-file storage backend behind the exact same `sheets.py` interface, so you can try the full agent (via the `/chat` endpoint and the `/ui` dashboard) with zero Google Cloud setup — no service account, no Sheet. See `HOW_TO_RUN.md` for the quickstart. The Google Sheets + Telegram + Railway path below is the full production setup.
 
 ### Prerequisites
 
